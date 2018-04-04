@@ -21,12 +21,13 @@ onboard_cam = cv2.VideoCapture("nvcamerasrc ! video/x-raw(memory:NVMM),"\
 " width=(int)1280, height=(int)720,format=(string)I420, framerate=(fraction)"\
 "30/1 ! nvvidconv flip-method=0 ! video/x-raw, format=(string)BGRx ! videoconvert"\
 " ! video/x-raw, format=(string)BGR ! appsink")
+
 ret_val, frame = onboard_cam.read()
 
 # loop over the image paths
 # load the image and resize it to (1) reduce detection time
 # and (2) improve detection accuracy
-    image = cv2.imread(imagePath)
+    image = frame
     image = imutils.resize(image, width=min(400, image.shape[1]))
     orig = image.copy()
 
