@@ -37,7 +37,7 @@ def parse_args():
                         action="store_true")
     parser.add_argument("--vid", dest="video_dev",
                         help="video device # of USB webcam (/dev/video?) [1]",
-                        default=1, type=int)
+                        default=0, type=int)
     parser.add_argument("--width", dest="image_width",
                         help="image width [1920]",
                         default=1920, type=int)
@@ -64,10 +64,11 @@ def open_cam_usb(dev, width, height):
 def open_cam_onboard(width, height):
     # On versions of L4T previous to L4T 28.1, flip-method=2
     # Use Jetson onboard camera
-    gst_str = ("nvcamerasrc ! "
-               "video/x-raw(memory:NVMM), width=(int)2592, height=(int)1458, format=(string)I420, framerate=(fraction)30/1 ! "
-               "nvvidconv ! video/x-raw, width=(int){}, height=(int){}, format=(string)BGRx ! "
-               "videoconvert ! appsink").format(width, height)
+    gst_str = ("nvcamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, format=(string)I420, framerate=(fraction)24/1 ! \
+			nvvidconv flip-method=0 ! video/x-raw, format=(string)I420 ! \
+			videoconvert ! video/x-raw, format=(string)BGR ! \
+			appsink")
+    print gst_str
     return cv2.VideoCapture(gst_str, cv2.CAP_GSTREAMER)
 
 def open_window(windowName, width, height):
